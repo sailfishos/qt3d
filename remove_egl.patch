@@ -1,0 +1,13 @@
+diff --git a/tools/qt3d/qglinfo/qglinfo.pro b/tools/qt3d/qglinfo/qglinfo.pro
+index 9e301bf..0934f9a 100644
+--- a/tools/qt3d/qglinfo/qglinfo.pro
++++ b/tools/qt3d/qglinfo/qglinfo.pro
+@@ -15,7 +15,7 @@ HEADERS += qglinfowindow.h \
+     fpswidget.h
+ RESOURCES += qglinfo.qrc
+ 
+-!contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
++DEFINES += QT_NO_EGL
+ 
+ OTHER_FILES += \
+     qglinfo.rc

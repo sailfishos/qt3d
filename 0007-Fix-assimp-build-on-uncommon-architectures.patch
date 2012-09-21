@@ -1,0 +1,139 @@
+From a0099fc8814beb714536f4c6e6052f1d5e3dace3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Mika=20Bostr=C3=B6m?= <mika.bostrom@nomovok.com>
+Date: Fri, 25 May 2012 11:33:04 +0300
+Subject: [PATCH 7/7] Fix assimp build on uncommon architectures
+
+This adapts the patch from upstream r1079
+http://assimp.svn.sourceforge.net/viewvc/assimp?view=revision&revision=1079
+
+The build should not error out when it encounters an architecture that
+has not been explicitly included. The truly annoying part of the error
+was that it *only* affected how a debug string was constructed.
+
+Using the byte order as provided by the build system is much nicer and
+hopefully cleaner.
+---
+ 3rdparty/assimp/code/Importer.cpp   |   26 +++++++++++-------
+ 3rdparty/assimp/include/aiDefines.h |   50 +++++++++--------------------------
+ 2 files changed, 30 insertions(+), 46 deletions(-)
+
+diff --git a/3rdparty/assimp/code/Importer.cpp b/3rdparty/assimp/code/Importer.cpp
+index ea4df5b..8cc034c 100644
+--- a/3rdparty/assimp/code/Importer.cpp
++++ b/3rdparty/assimp/code/Importer.cpp
+@@ -897,27 +897,35 @@ void WriteLogOpening(const std::string& file)
+         << aiGetVersionMinor()
+         << "."
+         << aiGetVersionRevision()
++        << " "
+ 
+-#if defined(ASSIMP_BUILD_X86_32BIT_ARCHITECTURE)
++#if defined(ASSIMP_BUILD_ARCHITECTURE)
++        << ASSIMP_BUILD_ARCHITECTURE
++#elif defined(_M_IX86) || defined(__x86_32__) || defined(__i386__)
+         << " x86"
+-#elif defined(ASSIMP_BUILD_X86_64BIT_ARCHITECTURE)
++#elif defined(_M_X64) || defined(__x86_64__)
+         << " amd64"
+-#elif defined(ASSIMP_BUILD_IA_64BIT_ARCHITECTURE)
++#elif defined(_M_IA64) || defined(__ia64__)
+         << " itanium"
+-#elif defined(ASSIMP_BUILD_PPC_32BIT_ARCHITECTURE)
++#elif defined(__ppc__) || defined(__powerpc__)
+         << " ppc32"
+-#elif defined(ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE)
+-        << " arm32"
++#elif defined(__powerpc64__)
++        << " ppc64"
++#elif defined(__arm__)
++        << " arm"
+ #else
+-#    error unknown architecture
++        << " unknown architecture"
+ #endif
+ 
+-#if defined(_MSC_VER)
++        << " "
++#if defined(ASSIMP_BUILD_COMPILER)
++        << ASSIMP_BUILD_COMPILER
++#elif defined(_MSC_VER)
+         << " msvc"
+ #elif defined(__GNUC__)
+         << " gcc"
+ #else
+-#    warning unknown compiler
++#       << " unknown compiler"
+ #endif
+ 
+ #ifndef NDEBUG
+diff --git a/3rdparty/assimp/include/aiDefines.h b/3rdparty/assimp/include/aiDefines.h
+index b6c5ff9..a1fcda7 100644
+--- a/3rdparty/assimp/include/aiDefines.h
++++ b/3rdparty/assimp/include/aiDefines.h
+@@ -219,41 +219,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #endif
+ 
+     //////////////////////////////////////////////////////////////////////////
+-    /* ASSIMP_BUILD_XXXX_NNBIT_ARCHITECTURE */
+-    //////////////////////////////////////////////////////////////////////////
+-#if defined(_MSC_VER)
+-    // See http://msdn.microsoft.com/en-us/library/b0084kay.
+-# if defined(_M_IX86)
+-#  define ASSIMP_BUILD_X86_32BIT_ARCHITECTURE
+-# elif defined(_M_X64)
+-#  define ASSIMP_BUILD_X86_64BIT_ARCHITECTURE
+-# elif defined(_M_IA64)
+-#  define ASSIMP_BUILD_IA_64BIT_ARCHITECTURE
+-# else
+-#  error unknown architecture
+-# endif
+-#elif defined(__GNUC__)
+-    // See http://gcc.gnu.org/onlinedocs/cpp/Predefined-Macros.html.
+-# if defined(__x86_32__) || defined(__i386__)
+-#  define ASSIMP_BUILD_X86_32BIT_ARCHITECTURE
+-# elif defined(__x86_64__)
+-#  define ASSIMP_BUILD_X86_64BIT_ARCHITECTURE
+-# elif defined(__ppc__)
+-#  define ASSIMP_BUILD_PPC_32BIT_ARCHITECTURE
+-#       elif defined(__arm__)
+-#               define ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE
+-# else
+-#  error unknown architecture
+-# endif
+-#elif defined (__GCCE__)
+-#define ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE
+-#elif defined (__arm__)
+-#define ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE
+-#else //assume
+-# error unknown compiler
+-#endif
+-
+-    //////////////////////////////////////////////////////////////////////////
+     /* Useful constants */
+     //////////////////////////////////////////////////////////////////////////
+ 
+@@ -271,8 +236,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #define AI_DEG_TO_RAD(x) (x*0.0174532925f)
+ #define AI_RAD_TO_DEG(x) (x*57.2957795f)
+ 
+-/* Support for big-endian builds on Mac OS X. */
+-#if defined(__APPLE__) && defined(__BIG_ENDIAN__)
++/* Support for big-endian builds */
++#if defined(__BYTE_ORDER__)
++#   if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
++#       if !defined(__BIG_ENDIAN__)
++#           define __BIG_ENDIAN__
++#       endif
++#   else /* little endian */
++#       if defined(__BIG_ENDIAN__)
++#           undef(__BIG_ENDIAN__)
++#       endif
++#   endif
++#endif
++#if defined(__BIG_ENDIAN__)
+ #define AI_BUILD_BIG_ENDIAN
+ #endif
+ 
+-- 
+1.7.9.5
+
