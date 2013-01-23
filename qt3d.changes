@@ -1,3 +1,6 @@
+* Wed Jan 23 2013 Carsten Munk <carsten.munk@jollamobile.com> - 0.0-git707.g0b92fa59437fff169c7701dae437d5ce0f7b46b1
+- Switch to git version to match with 5.0.0
+
 * Fri Sep 21 2012 Carsten Munk <carsten.munk@jollamobile.com> - 5.0.0~beta1
 - Automatic source update
 
