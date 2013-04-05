@@ -46,7 +46,7 @@ This package contains the Qt 3D development files
 %patch0 -p1
 %build
 export QTDIR=/usr/share/qt5
-qmake
+qmake -qt=5
 make %{?_smp_flags}
 
 %install
@@ -81,15 +81,26 @@ rm -rf %{buildroot}/%{_includedir}/qt5/Qt
 %defattr(-,root,root,-)
 %{_libdir}/libQt53D.so.5
 %{_libdir}/libQt53D.so.5.*
+%{_libdir}/libQt53DQuick.so.5.*
+%{_libdir}/libQt53DQuick.so.5
+%{_libdir}/qt5/qml/Qt3D/
+%{_qt5_bindir}/qglinfo
+
 
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/libQt53D.so
 %{_libdir}/libQt53D.prl
+%{_libdir}/libQt53DQuick.so
+%{_libdir}/libQt53DQuick.prl
 %{_includedir}/qt5/Qt3D/
+%{_includedir}/qt5/Qt3DQuick
 %{_libdir}/pkgconfig/Qt53D.pc
+%{_libdir}/pkgconfig/Qt53DQuick.pc
 %{_libdir}/cmake/Qt53D/
+%{_libdir}/cmake/Qt53DQuick/
 %{_datadir}/qt5/mkspecs/modules/qt_lib_3d.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_3dquick.pri
 
 ### No changelog section, separate $pkg.changes contains the history
 
