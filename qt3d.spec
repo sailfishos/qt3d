@@ -1,7 +1,7 @@
-%define _qtmodule_snapshot_version 0.0-git707.g0b92fa59437fff169c7701dae437d5ce0f7b46b1
+%define _qtmodule_snapshot_version 0.0~git731.0158ce783
 Name:       qt5-qt3d
 Summary:    Qt 3D
-Version:    0.0~git707.g0b92fa59437fff169c7701dae437d5ce0f7b46b1
+Version:    0.0~git731.0158ce783
 Release:    1%{?dist}
 Group:      Qt/Qt
 License:    LGPLv2.1 with exception or GPLv3
