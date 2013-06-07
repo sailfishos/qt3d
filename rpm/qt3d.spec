@@ -6,7 +6,6 @@ Group:      Qt/Qt
 License:    LGPLv2.1 with exception or GPLv3
 URL:        http://qt.nokia.com
 Source0:    %{name}-%{version}.tar.bz2
-Patch0:     0007-Fix-assimp-build-on-uncommon-architectures.patch
 BuildRequires:  qt5-qtcore-devel
 BuildRequires:  qt5-qtgui-devel
 BuildRequires:  qt5-qtwidgets-devel
@@ -41,7 +40,7 @@ This package contains the Qt 3D development files
 
 %prep
 %setup -q -n %{name}-%{version}/qt3d
-%patch0 -p1
+
 %build
 export QTDIR=/usr/share/qt5
 qmake -qt=5
