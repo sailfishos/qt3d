@@ -1,6 +1,6 @@
 Name:       qt5-qt3d
 Summary:    Qt 3D
-Version:    0.0~git731.0158ce783
+Version:    5.2.0
 Release:    1%{?dist}
 Group:      Qt/Qt
 License:    LGPLv2.1 with exception or GPLv3
