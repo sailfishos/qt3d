@@ -202,6 +202,8 @@ struct MDeformVert : ElemBase  {
     int totweight;
 };
 
+#undef emit
+
 // -------------------------------------------------------------------------------
 struct Material : ElemBase {
     ID id FAIL;
