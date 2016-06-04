@@ -6,13 +6,14 @@ Group:      Qt/Qt
 License:    LGPLv2.1 with exception or GPLv3
 URL:        http://qt.nokia.com
 Source0:    %{name}-%{version}.tar.bz2
-BuildRequires:  qt5-qtcore-devel
+BuildRequires:  qt5-qtcore-devel >= 5.9.5
 BuildRequires:  qt5-qtgui-devel
 BuildRequires:  qt5-qtwidgets-devel
 BuildRequires:  qt5-qtopengl-devel
+BuildRequires:  qt5-qtconcurrent-devel
+BuildRequires:  qt5-qtnetwork-devel
 BuildRequires:  qt5-qtdeclarative-devel
 BuildRequires:  qt5-qtdeclarative-qtquick-devel
-BuildRequires:  qt5-qtnetwork-devel
 BuildRequires:  fdupes
 
 %description
@@ -74,28 +75,27 @@ rm -rf %{buildroot}/%{_includedir}/qt5/Qt
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libQt53D.so.5
-%{_libdir}/libQt53D.so.5.*
+#%{_libdir}/libQt53D.so.5.*
 %{_libdir}/libQt53DQuick.so.5.*
 %{_libdir}/libQt53DQuick.so.5
 %{_libdir}/qt5/qml/Qt3D/
-%{_qt5_bindir}/qglinfo
+#%{_qt5_bindir}/qglinfo
 
 
 %files devel
 %defattr(-,root,root,-)
-%{_libdir}/libQt53D.so
-%{_libdir}/libQt53D.prl
+#%{_libdir}/libQt53D.so
+#%{_libdir}/libQt53D.prl
 %{_libdir}/libQt53DQuick.so
 %{_libdir}/libQt53DQuick.prl
 %{_includedir}/qt5/Qt3D/
 %{_includedir}/qt5/Qt3DQuick
-%{_libdir}/pkgconfig/Qt53D.pc
+#%{_libdir}/pkgconfig/Qt53D.pc
 %{_libdir}/pkgconfig/Qt53DQuick.pc
-%{_libdir}/cmake/Qt53D/
+#%{_libdir}/cmake/Qt53D/
 %{_libdir}/cmake/Qt53DQuick/
-%{_datadir}/qt5/mkspecs/modules/qt_lib_3d.pri
-%{_datadir}/qt5/mkspecs/modules/qt_lib_3d_private.pri
+#%{_datadir}/qt5/mkspecs/modules/qt_lib_3d.pri
+#%{_datadir}/qt5/mkspecs/modules/qt_lib_3d_private.pri
 %{_datadir}/qt5/mkspecs/modules/qt_lib_3dquick.pri
 %{_datadir}/qt5/mkspecs/modules/qt_lib_3dquick_private.pri
 
