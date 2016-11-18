@@ -47,6 +47,7 @@
 #include <QtCore/qfactoryinterface.h>
 #include <QtCore/qurl.h>
 #include <QObject>
+#include <QIODevice>
 
 QT_BEGIN_NAMESPACE
 
