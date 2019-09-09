@@ -84,7 +84,7 @@ aiColor4D g_clrInvalid = aiColor4D(get_qnan(),0.f,0.f,1.f);
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-DXFImporter::DXFImporter() : buffer(0), groupCode(0), bRepeat(false), mDefaultLayer(false)
+DXFImporter::DXFImporter() : buffer(0), groupCode(0), bRepeat(false), mDefaultLayer()
 {
     memset(cursor,0,sizeof(cursor));
 }
