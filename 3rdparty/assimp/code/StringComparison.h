@@ -135,7 +135,7 @@ inline int ASSIMP_stricmp(const char *s1, const char *s2)
     return ::strcasecmp(s1,s2);
 #else
 
-    register char c1, c2;
+    char c1, c2;
     do    {
         c1 = tolower(*s1++);
         c2 = tolower(*s2++);
@@ -154,7 +154,7 @@ inline int ASSIMP_stricmp(const char *s1, const char *s2)
  */
 inline int ASSIMP_stricmp(const std::string& a, const std::string& b)
 {
-    register int i = (int)b.length()-(int)a.length();
+    int i = (int)b.length()-(int)a.length();
     return (i ? i : ASSIMP_stricmp(a.c_str(),b.c_str()));
 }
 
@@ -184,7 +184,7 @@ inline int ASSIMP_strincmp(const char *s1, const char *s2, unsigned int n)
     return ::strncasecmp(s1,s2, n);
 
 #else
-    register char c1, c2;
+    char c1, c2;
     unsigned int p = 0;
     do
     {
