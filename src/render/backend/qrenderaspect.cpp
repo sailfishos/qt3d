@@ -236,7 +236,8 @@ void QRenderAspect::renderShutdown()
 {
     Q_D(QRenderAspect);
     d->m_shuttingDown = true;
-    d->m_renderer->doRender(); // Consume the remaining frames
+    // Skipping this is needed to avoid crashing with the threaded render loop (but this breaks the simple render loop)
+    // d->m_renderer->doRender(); // Consume the remaining frames
 }
 
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
