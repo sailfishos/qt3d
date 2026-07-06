@@ -43,6 +43,8 @@
 #define SCENE3DITEM_H
 
 #include <QQuickFramebufferObject>
+#include <QMutex>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,6 +54,12 @@ namespace Qt3D
     class QEntity;
     class QRenderAspect;
 }
+
+struct Scene3DSharedState
+{
+    QMutex mutex;
+    bool valid = true;
+};
 
 class Scene3DItem : public QQuickFramebufferObject
 {
@@ -86,6 +94,7 @@ private:
 
     Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
+    QSharedPointer<Scene3DSharedState> m_sharedState;
 };
 
 QT_END_NAMESPACE

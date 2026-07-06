@@ -82,10 +82,12 @@ class FrameBufferObjectRenderer : public QQuickFramebufferObject::Renderer
 public:
     FrameBufferObjectRenderer(Scene3DItem *item,
                               Qt3D::QAspectEngine *aspectEngine,
-                              Qt3D::QRenderAspect *renderAspect)
+                              Qt3D::QRenderAspect *renderAspect,
+                              QSharedPointer<Scene3DSharedState> sharedState)
         : m_item(item),
           m_aspectEngine(aspectEngine),
-          m_renderAspect(renderAspect)
+          m_renderAspect(renderAspect),
+          m_sharedState(sharedState)
     {
         ContextSaver saver;
 
@@ -100,6 +102,10 @@ public:
 
     void render() Q_DECL_OVERRIDE
     {
+        QMutexLocker locker(&m_sharedState->mutex);
+        if (!m_sharedState->valid)
+            return;
+
         if (m_aspectEngine->rootEntity() != m_item->entity())
             scheduleRootEntityChange();
 
@@ -126,13 +132,15 @@ public:
     Scene3DItem *m_item;
     Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
+    QSharedPointer<Scene3DSharedState> m_sharedState;
 };
 
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickFramebufferObject(parent),
       m_entity(Q_NULLPTR),
       m_aspectEngine(new Qt3D::QAspectEngine(this)),
-      m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
+      m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous)),
+      m_sharedState(QSharedPointer<Scene3DSharedState>::create())
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -144,6 +152,10 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
 
 Scene3DItem::~Scene3DItem()
 {
+    {
+        QMutexLocker locker(&m_sharedState->mutex);
+        m_sharedState->valid = false;
+    }
     m_renderAspect->renderShutdown();
 }
 
@@ -194,7 +206,7 @@ void Scene3DItem::applyRootEntityChange()
 QQuickFramebufferObject::Renderer *Scene3DItem::createRenderer() const
 {
     Scene3DItem *self = const_cast<Scene3DItem*>(this);
-    return new FrameBufferObjectRenderer(self, m_aspectEngine, m_renderAspect);
+    return new FrameBufferObjectRenderer(self, m_aspectEngine, m_renderAspect, m_sharedState);
 }
 
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
